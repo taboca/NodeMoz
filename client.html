@@ -1,0 +1,47 @@
+<head>
+  <script src='vendor-client/jquery.js'></script>
+  <style>  
+   #messages { 
+	border:5px solid gray; 
+	padding:1em;
+	background-color:white;
+   } 
+  </style>
+  <script>
+  var ws = null;
+
+  $(document).ready(function(){
+
+    if(!("WebSocket" in window)) {
+      document.getElementById("messages").innerHTML="You will need a WebSocket compatible browser, such as Firefox";
+      return;
+    }
+    ws = new WebSocket("ws://localhost:8080/");
+    ws.onmessage = function(evt) { 
+      data = "<div style='border-bottom:1px solid gray;padding:.5'>"+evt.data+"</div>"; 
+      $('#messages').prepend(data);
+    };
+    ws.onclose = function() {
+      document.getElementById("messages").innerHTML="socket closed";
+    };
+    ws.onopen = function() {
+      //alert("connected...");
+    };
+  });
+  
+  //http://dev.w3.org/html5/websockets/
+  function send() { 
+ 	var msg = document.getElementById("sendy").value; 
+        ws.send(msg);
+  } 
+
+  </script>
+</head>
+<body>
+  <div style='text-align:center'>
+  <input type="text" id="sendy" size="80" /><button onclick="send()">go</button>
+  </div>
+  <div id="messages">
+  </div>
+</body>
+</html>
